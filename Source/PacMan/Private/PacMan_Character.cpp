@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PaperFlipbookComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 APacMan_Character::APacMan_Character(){
 }
@@ -13,20 +14,23 @@ APacMan_Character::APacMan_Character(){
 void APacMan_Character::BeginPlay(){
 	Super::BeginPlay();
 
-	MovementVector = FVector2D(1, 0);
+	CurrentDirection = FVector2D(1, 0);
 }
 
 void APacMan_Character::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 	
+	if (NextDirection != FVector2D(0, 0)){
+        SetDirection(NextDirection);
+    }
 	if (this->GetController() != nullptr){ 
-		AddMovementInput(GetActorRightVector(), -MovementVector.Y);
-		AddMovementInput(GetActorForwardVector(), MovementVector.X);
+		AddMovementInput(GetActorRightVector(), CurrentDirection.Y);
+		AddMovementInput(GetActorForwardVector(), CurrentDirection.X);
 
-		if (!MovementVector.IsZero()){
+		if (!CurrentDirection.IsZero()){
 			FRotator CurrentRotation = GetActorRotation();
 		
-			float RotationAngle = FMath::Atan2(-MovementVector.Y, MovementVector.X) * (180.0f / PI);
+			float RotationAngle = FMath::Atan2(CurrentDirection.Y, CurrentDirection.X) * (180.0f / PI);
 			FRotator NewRotation(CurrentRotation.Pitch, RotationAngle, CurrentRotation.Roll);
 			SetActorRotation(NewRotation);
 		}
@@ -51,9 +55,50 @@ void APacMan_Character::SetupPlayerInputComponent(class UInputComponent* PlayerI
 }
 
 void APacMan_Character::Move(const FInputActionValue& Value){
-	FVector2D MovementInputVector = Value.Get<FVector2D>();
+	FVector2D MovementInputDirection = Value.Get<FVector2D>();
 
-	UE_LOG(LogTemp, Log, TEXT("Movement Value: X=%f, Y=%f"), MovementInputVector.X, MovementInputVector.Y);
+	UE_LOG(LogTemp, Log, TEXT("Movement Value: X=%f, Y=%f"), MovementInputDirection.X, MovementInputDirection.Y);
 
-	MovementVector = MovementInputVector;
+	NextDirection = FVector2D(MovementInputDirection.X, -MovementInputDirection.Y);
+}
+
+void APacMan_Character::SetDirection(FVector2D NewDirection, bool Forced){
+	// Only set the direction if the tile in that direction is available
+	// otherwise we set it as the next direction so it'll automatically be
+	// set when it does become available
+	if (Forced || !Occupied(NewDirection)){
+		CurrentDirection = NewDirection;
+		NextDirection = FVector2D::ZeroVector;
+	}
+	else{
+		NextDirection = NewDirection;
+	}
+}
+
+bool APacMan_Character::Occupied(FVector2D Direction){
+	// If no collider is hit then there is no obstacle in that direction
+	FHitResult Hit;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+
+	FVector Start = GetActorLocation();
+	FVector End = Start + FVector(Direction, 0.f) * 7.5f;
+
+	FVector BoxExtent = FVector(3.f, 3.f, 3.f);
+	
+	bool bHit = UKismetSystemLibrary::BoxTraceSingle(
+		GetWorld(),
+		Start,
+		End,
+		BoxExtent,
+		FRotator(FQuat::Identity),
+		TraceTypeQuery1,
+		false,
+		{},
+		EDrawDebugTrace::None,
+		Hit,
+		true
+	);
+
+	return bHit;
 }

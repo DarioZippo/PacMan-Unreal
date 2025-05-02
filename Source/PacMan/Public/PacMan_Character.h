@@ -25,7 +25,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
-	FVector2D MovementVector;
+	FVector2D CurrentDirection;
+	FVector2D NextDirection;
 	
 public:
 	APacMan_Character();
@@ -36,4 +37,6 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void Move(const FInputActionValue& Value);
+	void SetDirection(FVector2D NewDirection, bool Forced = false);
+	bool Occupied(FVector2D Direction);
 };
