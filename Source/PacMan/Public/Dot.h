@@ -7,7 +7,9 @@
 #include "GameFramework/Actor.h"
 #include "Dot.generated.h"
 
+class UPaperSpriteComponent;
 class USphereComponent;
+class UBoxComponent;
 
 DECLARE_MULTICAST_DELEGATE(FButtonInteractionEvent);
 
@@ -17,6 +19,12 @@ class PACMAN_API ADot : public AActor, public IEatable
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<UPaperSpriteComponent> DotSprite;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<UBoxComponent> EatTriggerArea;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Eatable")
 	TObjectPtr<USphereComponent> InteractionCollider;
 
@@ -24,7 +32,7 @@ protected:
 	float InteractionColliderRadius;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eatable", meta = (ClampMin = 0))
-	float EatPoints;
+	int EatScore;
 	
 public:
 	ADot();
@@ -35,6 +43,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool GetIsEatable() override;
+	
 protected:
 	virtual void BeginPlay() override;
 };

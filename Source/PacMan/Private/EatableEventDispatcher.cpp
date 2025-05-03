@@ -3,17 +3,17 @@
 
 #include "EatableEventDispatcher.h"
 
-void UEatableEventDispatcher::DispatchEatEvent(const EEatEvent& EatEvent){
+void UEatableEventDispatcher::DispatchEatEvent(const EEatEvent& EatEvent, int ScoreIncrement){
 	switch (EatEvent) {
 		case EEatEvent::Dot:
-			OnEatEvent.Broadcast();
+			OnEatEvent.Broadcast(ScoreIncrement);
 			break;
 		case EEatEvent::Pellet:
-			OnEatEvent.Broadcast();
+			OnEatEvent.Broadcast(ScoreIncrement);
 			OnEatPelletEvent.Broadcast();
 			break;
 		case EEatEvent::Ghost:
-			OnEatEvent.Broadcast();
+			OnEatEvent.Broadcast(ScoreIncrement);
 			OnEatGhostEvent.Broadcast();
 		default:
 			break;

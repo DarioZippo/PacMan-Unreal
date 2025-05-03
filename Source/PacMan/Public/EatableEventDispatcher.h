@@ -13,7 +13,7 @@ enum class EEatEvent : uint8 {
 	Ghost UMETA(DisplayName = "Ghost")
 };
 
-DECLARE_MULTICAST_DELEGATE(FEatEvent);
+DECLARE_MULTICAST_DELEGATE_OneParam(FEatEvent, int);
 DECLARE_MULTICAST_DELEGATE(FEatPelletEvent);
 DECLARE_MULTICAST_DELEGATE(FEatGhostEvent);
 
@@ -28,5 +28,5 @@ public:
 	FEatGhostEvent OnEatGhostEvent;
 
 public:
-	void DispatchEatEvent(const EEatEvent& EatEvent);
+	void DispatchEatEvent(const EEatEvent& EatEvent, int ScoreIncrement);
 };

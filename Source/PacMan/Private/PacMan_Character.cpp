@@ -3,12 +3,17 @@
 
 #include "PacMan_Character.h"
 
+#include "Dot.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PaperFlipbookComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 APacMan_Character::APacMan_Character(){
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APacMan_Character::OnEnterBoxOverlap);
+
+	DrawDebugTrace = false;
 }
 
 void APacMan_Character::BeginPlay(){
@@ -34,6 +39,16 @@ void APacMan_Character::Tick(float DeltaTime){
 			FRotator NewRotation(CurrentRotation.Pitch, RotationAngle, CurrentRotation.Roll);
 			SetActorRotation(NewRotation);
 		}
+	}
+}
+
+void APacMan_Character::OnEnterBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	if (OtherActor->Implements<UEatable>()){
+		IEatable* EatableActor = Cast<IEatable>(OtherActor);
+		EatableActor->Eat();
 	}
 }
 
@@ -95,7 +110,7 @@ bool APacMan_Character::Occupied(FVector2D Direction){
 		TraceTypeQuery1,
 		false,
 		{},
-		EDrawDebugTrace::None,
+		DrawDebugTrace ? EDrawDebugTrace::Persistent : EDrawDebugTrace::None,
 		Hit,
 		true
 	);
