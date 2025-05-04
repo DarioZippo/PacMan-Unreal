@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PaperZDCharacter.h"
+#include "Respawnable.h"
 #include "PacMan_Character.generated.h"
 
 class UInputMappingContext;
@@ -13,7 +14,7 @@ struct FInputActionValue;
 DECLARE_MULTICAST_DELEGATE(FDeathEvent);
 
 UCLASS()
-class PACMAN_API APacMan_Character : public APaperZDCharacter
+class PACMAN_API APacMan_Character : public APaperZDCharacter, public IRespawnable
 {
 	GENERATED_BODY()
 
@@ -50,6 +51,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	bool GetIsDead();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Respawn() override;
 	
 protected:
 	virtual void BeginPlay() override;

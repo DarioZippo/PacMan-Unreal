@@ -140,3 +140,7 @@ void APacMan_Character::BroadcastDeath(){
 bool APacMan_Character::GetIsDead(){
 	return IsDead;
 }
+
+void APacMan_Character::Respawn(){
+	
+}

@@ -4,21 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "Eatable.generated.h"
+#include "Respawnable.generated.h"
 
 UINTERFACE(MinimalAPI, BlueprintType)
-class UEatable : public UInterface{
+class URespawnable : public UInterface{
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
-class PACMAN_API IEatable
+class PACMAN_API IRespawnable
 {
 	GENERATED_BODY()
 
 public:
-	virtual void Eat() = 0;
-	virtual bool GetIsEatable() = 0;
+	virtual void Respawn() = 0;
 };
