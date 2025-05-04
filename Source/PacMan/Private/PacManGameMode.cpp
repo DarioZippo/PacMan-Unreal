@@ -4,6 +4,7 @@
 #include "PacManGameMode.h"
 
 #include "HUDWidget.h"
+#include "LifeManager.h"
 #include "ScoreManager.h"
 
 APacManGameMode::APacManGameMode(){
@@ -11,6 +12,9 @@ APacManGameMode::APacManGameMode(){
 
 	ScoreManager = CreateDefaultSubobject<UScoreManager>(TEXT("ScoreManager"));
 	AddOwnedComponent(ScoreManager);
+
+	LifeManager = CreateDefaultSubobject<ULifeManager>(TEXT("LifeManager"));
+	AddOwnedComponent(LifeManager);
 }
 
 void APacManGameMode::BeginPlay(){

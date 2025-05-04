@@ -8,12 +8,16 @@
 #include "EnhancedInputSubsystems.h"
 #include "PaperFlipbookComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+
+FDeathEvent APacMan_Character::OnDeathEvent;
 
 APacMan_Character::APacMan_Character(){
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APacMan_Character::OnEnterBoxOverlap);
 
 	DrawDebugTrace = false;
+	IsDead = false;
 }
 
 void APacMan_Character::BeginPlay(){
@@ -24,6 +28,12 @@ void APacMan_Character::BeginPlay(){
 
 void APacMan_Character::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
+
+	if (IsDead){
+		SetActorRotation(GetActorRotation() + FRotator(0.f, 180.f, 0.f));
+		GetMovementComponent()->StopMovementImmediately();
+		return;
+	}
 	
 	if (NextDirection != FVector2D(0, 0)){
         SetDirection(NextDirection);
@@ -116,4 +126,17 @@ bool APacMan_Character::Occupied(FVector2D Direction){
 	);
 
 	return bHit;
+}
+
+void APacMan_Character::Die(){
+	IsDead = true;
+	UE_LOG(LogTemp, Log, TEXT("DEAD"));
+}
+
+void APacMan_Character::BroadcastDeath(){
+	OnDeathEvent.Broadcast();
+}
+
+bool APacMan_Character::GetIsDead(){
+	return IsDead;
 }

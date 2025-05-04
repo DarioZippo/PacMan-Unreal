@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "PacManGameMode.generated.h"
 
+class ULifeManager;
 class UHUDWidget;
 class UScoreManager;
 
@@ -17,6 +18,9 @@ class PACMAN_API APacManGameMode : public AGameModeBase
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
 	TObjectPtr<UScoreManager> ScoreManager;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
+	TObjectPtr<ULifeManager> LifeManager;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	UHUDWidget* HUDWidget;

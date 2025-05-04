@@ -7,6 +7,7 @@
 #include "Ghost.generated.h"
 
 class UCapsuleComponent;
+class UPaperSpriteComponent;
 
 UCLASS()
 class PACMAN_API AGhost : public AActor
@@ -15,16 +16,16 @@ class PACMAN_API AGhost : public AActor
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	TObjectPtr<UPaperSpriteComponent> Sprite;
+	TObjectPtr<UPaperSpriteComponent> GhostSprite;
 
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UCapsuleComponent> Collider;
 	
 public:
 	AGhost();
 	
 	UFUNCTION()
-	void OnEnterBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	void OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 		const FHitResult& SweepResult);
 

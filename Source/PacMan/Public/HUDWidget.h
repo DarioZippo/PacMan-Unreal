@@ -31,4 +31,6 @@ protected:
 
 	UFUNCTION()
 	void UpdateScore(int NewScore);
+	UFUNCTION()
+	void UpdateLifes(int NewLifes);
 };

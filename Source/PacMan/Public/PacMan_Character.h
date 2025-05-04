@@ -10,14 +10,16 @@ class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 
-/**
- * 
- */
+DECLARE_MULTICAST_DELEGATE(FDeathEvent);
+
 UCLASS()
 class PACMAN_API APacMan_Character : public APaperZDCharacter
 {
 	GENERATED_BODY()
 
+public:
+	static FDeathEvent OnDeathEvent;	
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -30,6 +32,7 @@ protected:
 	
 	FVector2D CurrentDirection;
 	FVector2D NextDirection;
+	bool IsDead;
 	
 public:
 	APacMan_Character();
@@ -38,6 +41,15 @@ public:
 	void OnEnterBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 		const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable)
+	void Die();
+
+	UFUNCTION(BlueprintCallable)
+	void BroadcastDeath();
+	
+	UFUNCTION(BlueprintCallable)
+	bool GetIsDead();
 	
 protected:
 	virtual void BeginPlay() override;
