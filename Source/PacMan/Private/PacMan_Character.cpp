@@ -3,6 +3,7 @@
 
 #include "PacMan_Character.h"
 
+#include "CharacterPositionManager.h"
 #include "Dot.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -29,8 +30,13 @@ void APacMan_Character::BeginPlay(){
 void APacMan_Character::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 
+	FRotator CurrentRotation = GetActorRotation();
+		
+	float RotationAngle = FMath::Atan2(CurrentDirection.Y, CurrentDirection.X) * (180.0f / PI);
+	FRotator NewRotation(CurrentRotation.Pitch, RotationAngle, CurrentRotation.Roll);
+
 	if (IsDead){
-		SetActorRotation(GetActorRotation() + FRotator(0.f, 180.f, 0.f));
+		SetActorRotation(NewRotation + FRotator(0.f, -90.f, 0.f));
 		GetMovementComponent()->StopMovementImmediately();
 		return;
 	}
@@ -42,13 +48,7 @@ void APacMan_Character::Tick(float DeltaTime){
 		AddMovementInput(GetActorRightVector(), CurrentDirection.Y);
 		AddMovementInput(GetActorForwardVector(), CurrentDirection.X);
 
-		if (!CurrentDirection.IsZero()){
-			FRotator CurrentRotation = GetActorRotation();
-		
-			float RotationAngle = FMath::Atan2(CurrentDirection.Y, CurrentDirection.X) * (180.0f / PI);
-			FRotator NewRotation(CurrentRotation.Pitch, RotationAngle, CurrentRotation.Roll);
-			SetActorRotation(NewRotation);
-		}
+		SetActorRotation(NewRotation);
 	}
 }
 
@@ -135,6 +135,8 @@ void APacMan_Character::Die(){
 
 void APacMan_Character::BroadcastDeath(){
 	OnDeathEvent.Broadcast();
+
+	Respawn();
 }
 
 bool APacMan_Character::GetIsDead(){
@@ -142,5 +144,17 @@ bool APacMan_Character::GetIsDead(){
 }
 
 void APacMan_Character::Respawn(){
+	FTransform RespawnPosition = ACharacterPositionManager::Instance->GetRespawnPosition(ESpawnableCharacter::PacMan);
+	SetActorTransform(RespawnPosition);
+	CurrentDirection = FVector2D(1, 0);
 	
+	IsDead = false;
+}
+
+void APacMan_Character::SetIsTeleporting(bool NewIsTeleporting){
+	IsTeleporting = NewIsTeleporting;
+}
+
+bool APacMan_Character::GetIsTeleporting(){
+	return IsTeleporting;
 }

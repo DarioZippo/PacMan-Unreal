@@ -34,6 +34,8 @@ protected:
 	FVector2D CurrentDirection;
 	FVector2D NextDirection;
 	bool IsDead;
+
+	bool IsTeleporting;
 	
 public:
 	APacMan_Character();
@@ -54,6 +56,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Respawn() override;
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsTeleporting(bool NewIsTeleporting);
+	
+	UFUNCTION(BlueprintCallable)
+	bool GetIsTeleporting();
 	
 protected:
 	virtual void BeginPlay() override;

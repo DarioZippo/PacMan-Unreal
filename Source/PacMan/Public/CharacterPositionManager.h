@@ -29,6 +29,9 @@ public:
 public:	
 	ACharacterPositionManager();
 
+	UFUNCTION(BlueprintCallable)
+	FTransform GetRespawnPosition(ESpawnableCharacter Character);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

@@ -23,7 +23,7 @@ protected:
 	TObjectPtr<ULifeManager> LifeManager;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	UHUDWidget* HUDWidget;
+	TObjectPtr<UHUDWidget> HUDWidget;
 
 public:
 	APacManGameMode();

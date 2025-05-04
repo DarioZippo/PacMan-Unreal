@@ -24,3 +24,6 @@ void ACharacterPositionManager::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 }
 
+FTransform ACharacterPositionManager::GetRespawnPosition(ESpawnableCharacter Character){
+	return CharacterPositionsMap[Character]->GetTransform();
+}
