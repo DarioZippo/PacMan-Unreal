@@ -3,17 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
 #include "Ghost.generated.h"
 
+class AGhostAIController;
 class UCapsuleComponent;
 class UPaperSpriteComponent;
 
 UCLASS()
-class PACMAN_API AGhost : public AActor
+class PACMAN_API AGhost : public APawn
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Blackboard")
+	TObjectPtr<AActor> Target;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
+	FVector2D CurrentDirection;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float Speed;
+	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UPaperSpriteComponent> GhostSprite;
@@ -32,5 +43,4 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
 };

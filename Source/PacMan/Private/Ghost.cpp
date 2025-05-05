@@ -3,8 +3,11 @@
 
 #include "Ghost.h"
 
+#include "GhostAIController.h"
+#include "Node.h"
 #include "PacMan_Character.h"
 #include "PaperSpriteComponent.h"
+#include "VectorListContainer.h"
 #include "Components/CapsuleComponent.h"
 
 AGhost::AGhost(){
@@ -26,15 +29,22 @@ AGhost::AGhost(){
 	Collider->bHiddenInGame = true;
 	
 	Collider->OnComponentBeginOverlap.AddDynamic(this, &AGhost::OnEnterCapsuleOverlap);
+
+	Speed = 1;
 }
 
 void AGhost::BeginPlay(){
 	Super::BeginPlay();
+
+	CurrentDirection = FVector2D(0, 1);
 }
 
 // Called every frame
 void AGhost::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
+
+	FVector Movement = FVector(CurrentDirection.X, CurrentDirection.Y, 0.0f) * Speed * DeltaTime;
+	AddActorWorldOffset(Movement, true);
 }
 
 void AGhost::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -44,5 +54,21 @@ void AGhost::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	APacMan_Character* Character = Cast<APacMan_Character>(OtherActor);
 	if (Character){
 		Character->Die();
+	}
+	else{
+		ANode* Node = Cast<ANode>(OtherActor);
+		if (Node){
+			UVectorListContainer* VectorListContainer = NewObject<UVectorListContainer>();
+			VectorListContainer->VectorArray = Node->AvailableDirections;
+
+			AGhostAIController* GhostController = Cast<AGhostAIController>(GetController());
+			if (GhostController){
+				UE_LOG(LogTemp, Log, TEXT("On Node"));
+				GhostController->SetAvailableDirectionsBlackboard(VectorListContainer);
+			}
+			else{
+				UE_LOG(LogTemp, Error, TEXT("AIController NULL"));
+			}
+		}
 	}
 }

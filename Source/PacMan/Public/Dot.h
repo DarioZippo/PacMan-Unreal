@@ -24,9 +24,6 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UBoxComponent> EatTriggerArea;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Eatable")
-	TObjectPtr<USphereComponent> InteractionCollider;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Eatable")
 	float InteractionColliderRadius;
