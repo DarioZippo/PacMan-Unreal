@@ -77,3 +77,15 @@ void ANode::CheckAvailableDirection(FVector2D Direction){
 		AvailableDirections.Add(Direction);
 	}
 }
+
+TArray<FVector2D> ANode::GetFilteredAvailableDirections(FVector2D GhostDirection){
+	TArray<FVector2D> FilteredDirections;
+    
+	for (const FVector2D& Direction : AvailableDirections){
+		if (Direction != -GhostDirection){
+			FilteredDirections.Add(Direction);
+		}
+	}
+
+	return FilteredDirections;
+}

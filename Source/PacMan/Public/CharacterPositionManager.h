@@ -9,10 +9,10 @@
 UENUM(BlueprintType)
 enum class ESpawnableCharacter : uint8 {  
 	PacMan UMETA(DisplayName = "PacMan"),
-	Shadow UMETA(DisplayName = "Shadow"),
-	Speedy UMETA(DisplayName = "Speedy"),
-	Bashful UMETA(DisplayName = "Bashful"),
-	Pokey UMETA(DisplayName = "Pokey")
+	Blinky UMETA(DisplayName = "Blinky"),
+	Pinky UMETA(DisplayName = "Pinky"),
+	Inky UMETA(DisplayName = "Inky"),
+	Clyde UMETA(DisplayName = "Clyde")
 };
 
 UCLASS()

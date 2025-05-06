@@ -47,9 +47,9 @@ void UChasingGhostTask::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 			float MinDistance = TNumericLimits<float>::Max();
 
 			// Find the available direction that moves closet to pacman
-			UE_LOG(LogTemp, Log, TEXT("Available directions:"));
 			for (const FVector2D& AvailableDirection : AvailableDirections){
-				UE_LOG(LogTemp, Display, TEXT("X=%f, Y=%f"), AvailableDirection.X, AvailableDirection.Y);
+				//UE_LOG(LogTemp, Display, TEXT("X=%f, Y=%f"), AvailableDirection.X, AvailableDirection.Y);
+				
 				// If the distance in this direction is less than the current
 				// min distance then this direction becomes the new closest
 				FVector NewPosition = ControlledGhost->GetActorLocation() + FVector(AvailableDirection.X, AvailableDirection.Y, 0.0f);

@@ -35,6 +35,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "AI|Blackboard")
 	FString AvailableDirections;
+
+	UPROPERTY(EditAnywhere, Category = "AI|Blackboard")
+	FString IsFrightened;
 	
 public:
 	AGhostAIController();
@@ -44,7 +47,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SetAvailableDirectionsBlackboard(UVectorListContainer* VectorListContainer);
-	
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsFrightenedBlackboard(bool NewIsFrightened);
+
 protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual void OnPossess(APawn* InPawn) override;

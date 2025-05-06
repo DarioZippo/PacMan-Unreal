@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CheckAvailableDirection(FVector2D Direction);
 	
+	UFUNCTION(BlueprintCallable)
+	TArray<FVector2D> GetFilteredAvailableDirections(FVector2D GhostDirection);
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;

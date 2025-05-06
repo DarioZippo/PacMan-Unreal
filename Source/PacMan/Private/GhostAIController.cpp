@@ -53,3 +53,7 @@ void AGhostAIController::SetTargetBlackboard(AActor* TargetActor){
 void AGhostAIController::SetAvailableDirectionsBlackboard(UVectorListContainer* VectorListContainer){
 	BlackboardComponent->SetValueAsObject(*AvailableDirections, VectorListContainer);
 }
+
+void AGhostAIController::SetIsFrightenedBlackboard(bool NewIsFrightened){
+	BlackboardComponent->SetValueAsBool(*IsFrightened, NewIsFrightened);
+}

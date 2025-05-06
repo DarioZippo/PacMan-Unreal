@@ -3,6 +3,8 @@
 
 #include "Ghost.h"
 
+#include "CharacterPositionManager.h"
+#include "EatableEventDispatcher.h"
 #include "GhostAIController.h"
 #include "Node.h"
 #include "PacMan_Character.h"
@@ -30,12 +32,20 @@ AGhost::AGhost(){
 	
 	Collider->OnComponentBeginOverlap.AddDynamic(this, &AGhost::OnEnterCapsuleOverlap);
 
+	IsFrightened = false;
 	Speed = 1;
+	EatScore = 100;
+	IsEatable = false;
 }
 
 void AGhost::BeginPlay(){
 	Super::BeginPlay();
 
+	UEatableEventDispatcher* EatableEventDispatcher = GetWorld()->GetGameInstance()->GetSubsystem<UEatableEventDispatcher>();
+	if (EatableEventDispatcher){
+		EatableEventDispatcher->OnEatPelletEvent.AddUObject(this, &AGhost::SetIsFrightened, true);
+	}
+	
 	CurrentDirection = FVector2D(0, 1);
 }
 
@@ -52,18 +62,18 @@ void AGhost::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	const FHitResult& SweepResult)
 {
 	APacMan_Character* Character = Cast<APacMan_Character>(OtherActor);
-	if (Character){
+	if (!IsEatable && Character){
 		Character->Die();
 	}
 	else{
 		ANode* Node = Cast<ANode>(OtherActor);
 		if (Node){
 			UVectorListContainer* VectorListContainer = NewObject<UVectorListContainer>();
-			VectorListContainer->VectorArray = Node->AvailableDirections;
+			VectorListContainer->VectorArray = Node->GetFilteredAvailableDirections(CurrentDirection);
 
 			AGhostAIController* GhostController = Cast<AGhostAIController>(GetController());
 			if (GhostController){
-				UE_LOG(LogTemp, Log, TEXT("On Node"));
+				//UE_LOG(LogTemp, Log, TEXT("On Node"));
 				GhostController->SetAvailableDirectionsBlackboard(VectorListContainer);
 			}
 			else{
@@ -79,4 +89,34 @@ void AGhost::SetIsTeleporting(bool NewIsTeleporting){
 
 bool AGhost::GetIsTeleporting(){
 	return IsTeleporting;
+}
+
+void AGhost::SetIsFrightened(bool NewIsFrightened){
+	IsFrightened = NewIsFrightened;
+	IsEatable = IsFrightened;
+	
+	AGhostAIController* GhostController = Cast<AGhostAIController>(GetController());
+	if (GhostController){
+		UE_LOG(LogTemp, Log, TEXT("FRIGHTENED"));
+		GhostController->SetIsFrightenedBlackboard(NewIsFrightened);
+	}
+	else{
+		UE_LOG(LogTemp, Error, TEXT("AIController NULL"));
+	}
+}
+
+void AGhost::Eat(){
+	if (IsEatable){
+		UEatableEventDispatcher* EatableEventDispatcher = GetWorld()->GetGameInstance()->GetSubsystem<UEatableEventDispatcher>();
+		if (EatableEventDispatcher){
+			EatableEventDispatcher->DispatchEatEvent(EEatEvent::Dot, EatScore);
+		}
+
+		FTransform HousePosition = ACharacterPositionManager::Instance->GetRespawnPosition(GhostName);
+		SetActorLocation(HousePosition.GetLocation());
+	}
+}
+
+bool AGhost::GetIsEatable(){
+	return IsEatable;
 }
