@@ -76,11 +76,11 @@ void APortal::OnEnterBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	APacMan_Character* Character = Cast<APacMan_Character>(OtherActor);
-	if (Character){
-		if (!Character->GetIsTeleporting()){
-			Character->SetIsTeleporting(true);
-			Teleport(Character);
+	if (OtherActor->Implements<UTeleportable>()){
+		ITeleportable* TeleportableActor = Cast<ITeleportable>(OtherActor);
+		if (!TeleportableActor->GetIsTeleporting()){
+			TeleportableActor->SetIsTeleporting(true);
+			Teleport(OtherActor);
 		}
 	}
 }
@@ -89,8 +89,8 @@ void APortal::OnEnterExitAreaOverlap(UPrimitiveComponent* OverlappedComponent, A
                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                             const FHitResult& SweepResult)
 {
-	APacMan_Character* Character = Cast<APacMan_Character>(OtherActor);
-	if (Character){
-		Character->SetIsTeleporting(false);
+	if (OtherActor->Implements<UTeleportable>()){
+		ITeleportable* TeleportableActor = Cast<ITeleportable>(OtherActor);
+		TeleportableActor->SetIsTeleporting(false);
 	}
 }

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "PaperZDCharacter.h"
 #include "Respawnable.h"
+#include "Teleportable.h"
 #include "PacMan_Character.generated.h"
 
 class UInputMappingContext;
@@ -14,7 +15,7 @@ struct FInputActionValue;
 DECLARE_MULTICAST_DELEGATE(FDeathEvent);
 
 UCLASS()
-class PACMAN_API APacMan_Character : public APaperZDCharacter, public IRespawnable
+class PACMAN_API APacMan_Character : public APaperZDCharacter, public IRespawnable, public ITeleportable
 {
 	GENERATED_BODY()
 
@@ -58,10 +59,10 @@ public:
 	virtual void Respawn() override;
 
 	UFUNCTION(BlueprintCallable)
-	void SetIsTeleporting(bool NewIsTeleporting);
+	virtual void SetIsTeleporting(bool NewIsTeleporting) override;
 	
 	UFUNCTION(BlueprintCallable)
-	bool GetIsTeleporting();
+	virtual bool GetIsTeleporting() override;
 	
 protected:
 	virtual void BeginPlay() override;

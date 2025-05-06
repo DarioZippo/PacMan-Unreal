@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Teleportable.h"
 #include "GameFramework/Pawn.h"
 #include "Ghost.generated.h"
 
@@ -11,7 +12,7 @@ class UCapsuleComponent;
 class UPaperSpriteComponent;
 
 UCLASS()
-class PACMAN_API AGhost : public APawn
+class PACMAN_API AGhost : public APawn, public ITeleportable
 {
 	GENERATED_BODY()
 
@@ -32,6 +33,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UCapsuleComponent> Collider;
 	
+	bool IsTeleporting;
+	
 public:
 	AGhost();
 	
@@ -39,6 +42,12 @@ public:
 	void OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 		const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void SetIsTeleporting(bool NewIsTeleporting) override;
+	
+	UFUNCTION(BlueprintCallable)
+	virtual bool GetIsTeleporting() override;
 
 protected:
 	virtual void BeginPlay() override;

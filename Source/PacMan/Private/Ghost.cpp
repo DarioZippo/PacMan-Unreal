@@ -72,3 +72,11 @@ void AGhost::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		}
 	}
 }
+
+void AGhost::SetIsTeleporting(bool NewIsTeleporting){
+	IsTeleporting = NewIsTeleporting;
+}
+
+bool AGhost::GetIsTeleporting(){
+	return IsTeleporting;
+}
