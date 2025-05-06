@@ -17,6 +17,9 @@ class PACMAN_API ANode : public AActor
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Navigation")
 	TArray<FVector2D> AvailableDirections;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Navigation")
+	TArray<FVector2D> BannedDirections;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")

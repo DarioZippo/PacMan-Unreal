@@ -74,7 +74,8 @@ void ANode::CheckAvailableDirection(FVector2D Direction){
 	);
 
 	if (!bHit){
-		AvailableDirections.Add(Direction);
+		if (!BannedDirections.Contains(Direction))
+			AvailableDirections.Add(Direction);
 	}
 }
 
