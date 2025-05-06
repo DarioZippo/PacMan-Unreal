@@ -9,6 +9,7 @@
 #include "GameFramework/Pawn.h"
 #include "Ghost.generated.h"
 
+enum class EGhostState : uint8;
 class AGhostAIController;
 class UCapsuleComponent;
 class UPaperSpriteComponent;
@@ -26,7 +27,10 @@ public:
 	TObjectPtr<AActor> Target;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Blackboard")
-	bool IsFrightened;
+	TObjectPtr<AActor> ScatterTarget;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Blackboard")
+	EGhostState GhostState;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
 	FVector2D CurrentDirection;
@@ -64,8 +68,7 @@ public:
 	virtual bool GetIsTeleporting() override;
 	
 	UFUNCTION(BlueprintCallable)
-	void SetIsFrightened(bool NewIsFrightened);
-
+	void SetGhostState(EGhostState NewGhostState);
 	
 	UFUNCTION(BlueprintCallable)
 	virtual void Eat() override;

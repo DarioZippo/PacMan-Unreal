@@ -5,10 +5,12 @@
 
 #include "CharacterPositionManager.h"
 #include "EatableEventDispatcher.h"
+#include "EGhostState.h"
 #include "GhostAIController.h"
 #include "Node.h"
 #include "PacMan_Character.h"
 #include "PaperSpriteComponent.h"
+#include "ProximitySensor.h"
 #include "VectorListContainer.h"
 #include "Components/CapsuleComponent.h"
 
@@ -32,7 +34,7 @@ AGhost::AGhost(){
 	
 	Collider->OnComponentBeginOverlap.AddDynamic(this, &AGhost::OnEnterCapsuleOverlap);
 
-	IsFrightened = false;
+	GhostState = EGhostState::Chase;
 	Speed = 1;
 	EatScore = 100;
 	IsEatable = false;
@@ -43,9 +45,19 @@ void AGhost::BeginPlay(){
 
 	UEatableEventDispatcher* EatableEventDispatcher = GetWorld()->GetGameInstance()->GetSubsystem<UEatableEventDispatcher>();
 	if (EatableEventDispatcher){
-		EatableEventDispatcher->OnEatPelletEvent.AddUObject(this, &AGhost::SetIsFrightened, true);
+		EatableEventDispatcher->OnEatPelletEvent.AddUObject(this, &AGhost::SetGhostState, EGhostState::Frightened);
+	}
+
+	AGhostAIController* GhostController = Cast<AGhostAIController>(GetController());
+	if (GhostController){
+		GhostController->SetTargetBlackboard(Target);
+		GhostController->SetScatterTargetBlackboard(ScatterTarget);
+	}
+	else{
+		UE_LOG(LogTemp, Error, TEXT("AIController NULL"));
 	}
 	
+	SetGhostState(GhostState);
 	CurrentDirection = FVector2D(0, 1);
 }
 
@@ -63,6 +75,7 @@ void AGhost::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 {
 	APacMan_Character* Character = Cast<APacMan_Character>(OtherActor);
 	if (!IsEatable && Character){
+		UE_LOG(LogTemp, Warning, TEXT("Collider Player"));
 		Character->Die();
 	}
 	else{
@@ -73,7 +86,7 @@ void AGhost::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 			AGhostAIController* GhostController = Cast<AGhostAIController>(GetController());
 			if (GhostController){
-				//UE_LOG(LogTemp, Log, TEXT("On Node"));
+				UE_LOG(LogTemp, Log, TEXT("On Node"));
 				GhostController->SetAvailableDirectionsBlackboard(VectorListContainer);
 			}
 			else{
@@ -91,14 +104,13 @@ bool AGhost::GetIsTeleporting(){
 	return IsTeleporting;
 }
 
-void AGhost::SetIsFrightened(bool NewIsFrightened){
-	IsFrightened = NewIsFrightened;
-	IsEatable = IsFrightened;
+void AGhost::SetGhostState(EGhostState NewGhostState){
+	GhostState = NewGhostState;
+	IsEatable = GhostState == EGhostState::Frightened;
 	
 	AGhostAIController* GhostController = Cast<AGhostAIController>(GetController());
 	if (GhostController){
-		UE_LOG(LogTemp, Log, TEXT("FRIGHTENED"));
-		GhostController->SetIsFrightenedBlackboard(NewIsFrightened);
+		GhostController->SetGhostStateBlackboard(GhostState);
 	}
 	else{
 		UE_LOG(LogTemp, Error, TEXT("AIController NULL"));

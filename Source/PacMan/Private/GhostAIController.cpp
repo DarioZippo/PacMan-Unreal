@@ -3,14 +3,11 @@
 
 #include "GhostAIController.h"
 
-#include "Ghost.h"
-#include "Node.h"
-#include "PacMan_Character.h"
 #include "VectorListContainer.h"
+#include "EGhostState.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Components/CapsuleComponent.h"
 
 AGhostAIController::AGhostAIController(){
 	BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
@@ -50,10 +47,14 @@ void AGhostAIController::SetTargetBlackboard(AActor* TargetActor){
 	BlackboardComponent->SetValueAsObject(*Target, TargetActor);
 }
 
+void AGhostAIController::SetScatterTargetBlackboard(AActor* ScatterActor){
+	BlackboardComponent->SetValueAsObject(*ScatterTarget, ScatterActor);
+}
+
 void AGhostAIController::SetAvailableDirectionsBlackboard(UVectorListContainer* VectorListContainer){
 	BlackboardComponent->SetValueAsObject(*AvailableDirections, VectorListContainer);
 }
 
-void AGhostAIController::SetIsFrightenedBlackboard(bool NewIsFrightened){
-	BlackboardComponent->SetValueAsBool(*IsFrightened, NewIsFrightened);
+void AGhostAIController::SetGhostStateBlackboard(EGhostState NewGhostState){
+	BlackboardComponent->SetValueAsEnum(*GhostState, static_cast<uint8>(NewGhostState));
 }

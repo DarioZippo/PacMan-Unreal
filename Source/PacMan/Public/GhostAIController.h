@@ -7,6 +7,7 @@
 #include "VectorListContainer.h"
 #include "GhostAIController.generated.h"
 
+enum class EGhostState : uint8;
 class UCapsuleComponent;
 class UBehaviorTree;
 class UBehaviorTreeComponent;
@@ -32,24 +33,30 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Blackboard")
 	FString Target;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Blackboard")
+	FString ScatterTarget;
 	
 	UPROPERTY(EditAnywhere, Category = "AI|Blackboard")
 	FString AvailableDirections;
 
 	UPROPERTY(EditAnywhere, Category = "AI|Blackboard")
-	FString IsFrightened;
+	FString GhostState;
 	
 public:
 	AGhostAIController();
 
 	UFUNCTION(BlueprintCallable)
 	void SetTargetBlackboard(AActor* TargetActor);
+
+	UFUNCTION(BlueprintCallable)
+	void SetScatterTargetBlackboard(AActor* TargetActor);
 	
 	UFUNCTION(BlueprintCallable)
 	void SetAvailableDirectionsBlackboard(UVectorListContainer* VectorListContainer);
 
 	UFUNCTION(BlueprintCallable)
-	void SetIsFrightenedBlackboard(bool NewIsFrightened);
+	void SetGhostStateBlackboard(EGhostState NewGhostState);
 
 protected:
 	virtual void Tick(float DeltaTime) override;

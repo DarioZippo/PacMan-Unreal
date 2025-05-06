@@ -9,7 +9,7 @@
 #include "Ghost.h"
 
 UChasingGhostTask::UChasingGhostTask(){
-	NodeName = "Investigating";
+	NodeName = "Chasing";
 	bNotifyTick = true;
 }
 
