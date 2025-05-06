@@ -20,7 +20,13 @@ class PACMAN_API APacMan_Character : public APaperZDCharacter, public IRespawnab
 	GENERATED_BODY()
 
 public:
-	static FDeathEvent OnDeathEvent;	
+	static FDeathEvent OnDeathEvent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	FVector2D CurrentDirection;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	FVector2D NextDirection;
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -32,10 +38,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
 	bool DrawDebugTrace;
 	
-	FVector2D CurrentDirection;
-	FVector2D NextDirection;
 	bool IsDead;
-
 	bool IsTeleporting;
 	
 public:
