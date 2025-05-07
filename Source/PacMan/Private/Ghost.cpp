@@ -8,7 +8,7 @@
 #include "EGhostState.h"
 #include "GhostAIController.h"
 #include "Node.h"
-#include "PacMan_Character.h"
+#include "PacManCharacter.h"
 #include "PaperSpriteComponent.h"
 #include "PaperSprite.h"
 #include "VectorListContainer.h"
@@ -93,9 +93,8 @@ void AGhost::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AAc
                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                    const FHitResult& SweepResult)
 {
-	APacMan_Character* Character = Cast<APacMan_Character>(OtherActor);
+	APacManCharacter* Character = Cast<APacManCharacter>(OtherActor);
 	if (!IsEatable && Character){
-		UE_LOG(LogTemp, Warning, TEXT("Collider Player"));
 		Character->Die();
 	}
 	else{

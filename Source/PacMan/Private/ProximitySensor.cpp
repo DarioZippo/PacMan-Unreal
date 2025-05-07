@@ -5,7 +5,7 @@
 
 #include "EGhostState.h"
 #include "Ghost.h"
-#include "PacMan_Character.h"
+#include "PacManCharacter.h"
 #include "Components/CapsuleComponent.h"
 
 AProximitySensor::AProximitySensor(){
@@ -40,7 +40,7 @@ void AProximitySensor::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComp
 	const FHitResult& SweepResult)
 {
 	if (Target && Target->GhostState != EGhostState::Frightened){
-		APacMan_Character* Character = Cast<APacMan_Character>(OtherActor);
+		APacManCharacter* Character = Cast<APacManCharacter>(OtherActor);
 		if (Character){
 			//UE_LOG(LogTemp, Log, TEXT("In proximity to the player"));
 			Target->SetGhostState(EGhostState::Scatter);

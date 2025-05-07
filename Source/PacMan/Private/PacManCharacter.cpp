@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PacMan_Character.h"
+#include "PacManCharacter.h"
 
 #include "CharacterPositionManager.h"
 #include "Dot.h"
@@ -12,22 +12,22 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-FDeathEvent APacMan_Character::OnDeathEvent;
+FDeathEvent APacManCharacter::OnDeathEvent;
 
-APacMan_Character::APacMan_Character(){
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APacMan_Character::OnEnterBoxOverlap);
+APacManCharacter::APacManCharacter(){
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APacManCharacter::OnEnterBoxOverlap);
 	
 	DrawDebugTrace = false;
 	IsDead = false;
 }
 
-void APacMan_Character::BeginPlay(){
+void APacManCharacter::BeginPlay(){
 	Super::BeginPlay();
 
 	CurrentDirection = FVector2D(1, 0);
 }
 
-void APacMan_Character::Tick(float DeltaTime){
+void APacManCharacter::Tick(float DeltaTime){
 	Super::Tick(DeltaTime);
 
 	FRotator CurrentRotation = GetActorRotation();
@@ -52,7 +52,7 @@ void APacMan_Character::Tick(float DeltaTime){
 	}
 }
 
-void APacMan_Character::OnEnterBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void APacManCharacter::OnEnterBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult)
 {
@@ -62,7 +62,7 @@ void APacMan_Character::OnEnterBoxOverlap(UPrimitiveComponent* OverlappedCompone
 	}
 }
 
-void APacMan_Character::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent){
+void APacManCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent){
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController())){
@@ -72,19 +72,19 @@ void APacMan_Character::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	}
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)){
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APacMan_Character::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APacManCharacter::Move);
 	}
 	else{
 		UE_LOG(LogTemp, Error, TEXT("Failed to find an Enhanced Input component!"));
 	}
 }
 
-void APacMan_Character::Move(const FInputActionValue& Value){
+void APacManCharacter::Move(const FInputActionValue& Value){
 	FVector2D MovementInputDirection = Value.Get<FVector2D>();
 	NextDirection = FVector2D(MovementInputDirection.X, -MovementInputDirection.Y);
 }
 
-void APacMan_Character::SetDirection(FVector2D NewDirection, bool Forced){
+void APacManCharacter::SetDirection(FVector2D NewDirection, bool Forced){
 	// Only set the direction if the tile in that direction is available
 	// otherwise we set it as the next direction so it'll automatically be
 	// set when it does become available
@@ -97,7 +97,7 @@ void APacMan_Character::SetDirection(FVector2D NewDirection, bool Forced){
 	}
 }
 
-bool APacMan_Character::Occupied(FVector2D Direction){
+bool APacManCharacter::Occupied(FVector2D Direction){
 	// If no collider is hit then there is no obstacle in that direction
 	FHitResult Hit;
 	FCollisionQueryParams QueryParams;
@@ -125,32 +125,32 @@ bool APacMan_Character::Occupied(FVector2D Direction){
 	return bHit;
 }
 
-void APacMan_Character::Die(){
+void APacManCharacter::Die(){
 	IsDead = true;
-	UE_LOG(LogTemp, Log, TEXT("DEAD"));
 }
 
-void APacMan_Character::BroadcastDeath(){
+void APacManCharacter::BroadcastDeath(){
 	OnDeathEvent.Broadcast();
 
 	Respawn();
 }
 
-bool APacMan_Character::GetIsDead(){
+bool APacManCharacter::GetIsDead(){
 	return IsDead;
 }
 
-void APacMan_Character::Respawn(){
+void APacManCharacter::Respawn(){
 	FTransform RespawnPosition = ACharacterPositionManager::Instance->GetRespawnPosition(ESpawnableCharacter::PacMan);
 	SetActorTransform(RespawnPosition);
+	CurrentDirection = FVector2D(1, 0);
 	
 	IsDead = false;
 }
 
-void APacMan_Character::SetIsTeleporting(bool NewIsTeleporting){
+void APacManCharacter::SetIsTeleporting(bool NewIsTeleporting){
 	IsTeleporting = NewIsTeleporting;
 }
 
-bool APacMan_Character::GetIsTeleporting(){
+bool APacManCharacter::GetIsTeleporting(){
 	return IsTeleporting;
 }

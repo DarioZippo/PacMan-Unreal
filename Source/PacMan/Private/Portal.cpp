@@ -3,7 +3,7 @@
 
 #include "Portal.h"
 
-#include "PacMan_Character.h"
+#include "PacManCharacter.h"
 #include "Components/BoxComponent.h"
 
 APortal::APortal(){

@@ -6,7 +6,7 @@
 #include "PaperZDCharacter.h"
 #include "Respawnable.h"
 #include "Teleportable.h"
-#include "PacMan_Character.generated.h"
+#include "PacManCharacter.generated.h"
 
 class UPaperSprite;
 class UInputMappingContext;
@@ -16,7 +16,7 @@ struct FInputActionValue;
 DECLARE_MULTICAST_DELEGATE(FDeathEvent);
 
 UCLASS()
-class PACMAN_API APacMan_Character : public APaperZDCharacter, public IRespawnable, public ITeleportable
+class PACMAN_API APacManCharacter : public APaperZDCharacter, public IRespawnable, public ITeleportable
 {
 	GENERATED_BODY()
 
@@ -43,7 +43,7 @@ protected:
 	bool IsTeleporting;
 	
 public:
-	APacMan_Character();
+	APacManCharacter();
 
 	UFUNCTION()
 	void OnEnterBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

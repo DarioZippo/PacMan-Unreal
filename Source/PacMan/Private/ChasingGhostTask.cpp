@@ -42,18 +42,15 @@ void UChasingGhostTask::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 	if (ControlledGhost){
 		UVectorListContainer* AvailableDirectionsContainer = Cast<UVectorListContainer>(BlackboardComponent->GetValueAsObject(AvailableDirectionsKey.SelectedKeyName));
 		if (AvailableDirectionsContainer != nullptr){
-			UE_LOG(LogTemp, Display, TEXT("AvailableDirectionsContainer"));
+			//UE_LOG(LogTemp, Log, TEXT("AvailableDirectionsContainer"));
 			TArray<FVector2D> AvailableDirections = AvailableDirectionsContainer->VectorArray;
 			
 			FVector2D Direction = FVector2D::Zero();
 			float MinDistance = TNumericLimits<float>::Max();
 
-			// Find the available direction that moves closet to pacman
+			// Find the available direction that comes closest to Pacman
 			for (const FVector2D& AvailableDirection : AvailableDirections){
-				UE_LOG(LogTemp, Log, TEXT("X=%f, Y=%f"), AvailableDirection.X, AvailableDirection.Y);
-				
-				// If the distance in this direction is less than the current
-				// min distance then this direction becomes the new closest
+				//UE_LOG(LogTemp, Log, TEXT("X=%f, Y=%f"), AvailableDirection.X, AvailableDirection.Y);
 				FVector NewPosition = ControlledGhost->GetActorLocation() + FVector(AvailableDirection.X, AvailableDirection.Y, 0.0f);
 				float Distance = FVector::DistSquared(Target->GetActorLocation(), NewPosition);
 

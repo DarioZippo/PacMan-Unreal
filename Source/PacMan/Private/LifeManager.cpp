@@ -3,7 +3,7 @@
 
 #include "LifeManager.h"
 
-#include "PacMan_Character.h"
+#include "PacManCharacter.h"
 
 FLifesUpdateEvent ULifeManager::OnLifesUpdateEvent;
 
@@ -16,7 +16,7 @@ ULifeManager::ULifeManager(){
 void ULifeManager::BeginPlay(){
 	Super::BeginPlay();
 	
-	APacMan_Character::OnDeathEvent.AddUObject(this, &ULifeManager::LoseLife);
+	APacManCharacter::OnDeathEvent.AddUObject(this, &ULifeManager::LoseLife);
 }
 
 void ULifeManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction){
