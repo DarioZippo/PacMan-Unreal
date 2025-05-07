@@ -28,5 +28,8 @@ public:
 
 protected:
 	UFUNCTION()
-	void UpdateScore(int ScoreIncrement);
+	void AddScore(int ScoreIncrement);
+	
+	UFUNCTION()
+	void UpdateScore(int NewScore);
 };

@@ -9,7 +9,7 @@ FLifesUpdateEvent ULifeManager::OnLifesUpdateEvent;
 
 ULifeManager::ULifeManager(){
 	PrimaryComponentTick.bCanEverTick = true;
-
+	
 	Lifes = 3;
 }
 
@@ -21,6 +21,12 @@ void ULifeManager::BeginPlay(){
 
 void ULifeManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction){
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
+
+void ULifeManager::UpdateLifes(int NewLifes){
+	Lifes = NewLifes;
+
+	OnLifesUpdateEvent.Broadcast(Lifes);
 }
 
 void ULifeManager::LoseLife(){

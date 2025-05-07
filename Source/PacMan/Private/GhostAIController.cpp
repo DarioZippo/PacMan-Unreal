@@ -23,7 +23,15 @@ void AGhostAIController::OnPossess(APawn* InPawn){
 	
 	if (BehaviorTree){
 		if (UseBlackboard(BehaviorTree->BlackboardAsset, BlackboardComponent)){
-			StartBehaviorTree(InPawn);
+			float RandomDelay = FMath::RandRange(0.0f, 5.0f);
+
+			// Set a timer to randomize a delay between the ghosts starting
+			GetWorld()->GetTimerManager().SetTimer(
+				TimerHandle_DelayedStart,
+				[this, InPawn]() { StartBehaviorTree(InPawn); },
+				RandomDelay,
+				false
+			);
 		}
 	}
 }
@@ -35,8 +43,12 @@ void AGhostAIController::Tick(float DeltaTime){
 void AGhostAIController::StartBehaviorTree(APawn* InPawn){
 	BehaviorTreeComponent->StartTree(*BehaviorTree);
 
+	ResetMovement();
+}
+
+void AGhostAIController::ResetMovement(){
 	TArray<FVector2D> InitialAvailableDirections;
-	InitialAvailableDirections.Add(FVector2D(0, 1));
+	InitialAvailableDirections.Add(FVector2D(1, 0));
 	
 	UVectorListContainer* VectorListContainer = NewObject<UVectorListContainer>();
 	VectorListContainer->VectorArray = InitialAvailableDirections;

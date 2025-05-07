@@ -14,9 +14,6 @@ ACharacterPositionManager::ACharacterPositionManager(){
 void ACharacterPositionManager::BeginPlay(){
 	Super::BeginPlay();
 
-	if (Instance != nullptr){
-		this->Destroy();
-	}
 	Instance = this;
 }
 
@@ -25,5 +22,8 @@ void ACharacterPositionManager::Tick(float DeltaTime){
 }
 
 FTransform ACharacterPositionManager::GetRespawnPosition(ESpawnableCharacter Character){
-	return CharacterPositionsMap[Character]->GetTransform();
+	if (CharacterPositionsMap.Contains(Character)){
+		return CharacterPositionsMap[Character]->GetTransform();
+	}
+	return FTransform();
 }

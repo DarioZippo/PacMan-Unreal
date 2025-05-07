@@ -77,6 +77,10 @@ void ANode::CheckAvailableDirection(FVector2D Direction){
 		if (!BannedDirections.Contains(Direction))
 			AvailableDirections.Add(Direction);
 	}
+	else{
+		if (ForcedDirections.Contains(Direction))
+			AvailableDirections.Add(Direction);
+	}
 }
 
 TArray<FVector2D> ANode::GetFilteredAvailableDirections(FVector2D GhostDirection){

@@ -13,6 +13,7 @@ enum class EGhostState : uint8;
 class AGhostAIController;
 class UCapsuleComponent;
 class UPaperSpriteComponent;
+class UPaperSprite;
 
 UCLASS()
 class PACMAN_API AGhost : public APawn, public ITeleportable, public IEatable
@@ -32,7 +33,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI|Blackboard")
 	EGhostState GhostState;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	FVector2D CurrentDirection;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
@@ -42,6 +43,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UPaperSpriteComponent> GhostSprite;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<UPaperSpriteComponent> EyesSprite;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visual")
+	TMap<FVector2D, UPaperSprite*> EyesSpritesMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	TObjectPtr<UPaperSpriteComponent> FrightenedGhostSprite;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UCapsuleComponent> Collider;
 
@@ -62,6 +72,9 @@ public:
 		const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable)
+	void SetDirection(FVector2D NewDirection);
+	
+	UFUNCTION(BlueprintCallable)
 	virtual void SetIsTeleporting(bool NewIsTeleporting) override;
 	
 	UFUNCTION(BlueprintCallable)
@@ -79,4 +92,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+
+	void Respawn();
 };

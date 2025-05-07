@@ -8,6 +8,7 @@
 #include "Teleportable.h"
 #include "PacMan_Character.generated.h"
 
+class UPaperSprite;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
@@ -34,7 +35,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug")
 	bool DrawDebugTrace;
 	

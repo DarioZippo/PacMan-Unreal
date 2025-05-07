@@ -9,7 +9,7 @@ FScoreUpdateEvent UScoreManager::OnScoreUpdateEvent;
 
 UScoreManager::UScoreManager(){
 	PrimaryComponentTick.bCanEverTick = true;
-
+	
 	Score = 0;
 }
 
@@ -18,7 +18,7 @@ void UScoreManager::BeginPlay(){
 	
 	UEatableEventDispatcher* EatableEventDispatcher = GetWorld()->GetGameInstance()->GetSubsystem<UEatableEventDispatcher>();
 	if (EatableEventDispatcher){
-		EatableEventDispatcher->OnEatEvent.AddUObject(this, &UScoreManager::UpdateScore);
+		EatableEventDispatcher->OnEatEvent.AddUObject(this, &UScoreManager::AddScore);
 	}
 }
 
@@ -26,7 +26,13 @@ void UScoreManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UScoreManager::UpdateScore(int ScoreIncrement){
+void UScoreManager::UpdateScore(int NewScore){
+	Score = NewScore;
+
+	OnScoreUpdateEvent.Broadcast(Score);
+}
+
+void UScoreManager::AddScore(int ScoreIncrement){
 	Score += ScoreIncrement;
 
 	OnScoreUpdateEvent.Broadcast(Score);

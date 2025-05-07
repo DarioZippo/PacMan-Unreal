@@ -39,10 +39,10 @@ void AProximitySensor::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComp
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	if (Target){
+	if (Target && Target->GhostState != EGhostState::Frightened){
 		APacMan_Character* Character = Cast<APacMan_Character>(OtherActor);
 		if (Character){
-			UE_LOG(LogTemp, Log, TEXT("In proximity to the player"));
+			//UE_LOG(LogTemp, Log, TEXT("In proximity to the player"));
 			Target->SetGhostState(EGhostState::Scatter);
 		}
 	}

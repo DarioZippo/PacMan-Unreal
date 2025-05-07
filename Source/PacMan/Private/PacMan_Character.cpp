@@ -7,7 +7,7 @@
 #include "Dot.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "PaperFlipbookComponent.h"
+#include "PaperSpriteComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -16,7 +16,7 @@ FDeathEvent APacMan_Character::OnDeathEvent;
 
 APacMan_Character::APacMan_Character(){
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APacMan_Character::OnEnterBoxOverlap);
-
+	
 	DrawDebugTrace = false;
 	IsDead = false;
 }
@@ -81,9 +81,6 @@ void APacMan_Character::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 void APacMan_Character::Move(const FInputActionValue& Value){
 	FVector2D MovementInputDirection = Value.Get<FVector2D>();
-
-	UE_LOG(LogTemp, Log, TEXT("Movement Value: X=%f, Y=%f"), MovementInputDirection.X, MovementInputDirection.Y);
-
 	NextDirection = FVector2D(MovementInputDirection.X, -MovementInputDirection.Y);
 }
 
@@ -146,7 +143,6 @@ bool APacMan_Character::GetIsDead(){
 void APacMan_Character::Respawn(){
 	FTransform RespawnPosition = ACharacterPositionManager::Instance->GetRespawnPosition(ESpawnableCharacter::PacMan);
 	SetActorTransform(RespawnPosition);
-	CurrentDirection = FVector2D(1, 0);
 	
 	IsDead = false;
 }

@@ -29,4 +29,7 @@ public:
 protected:
 	UFUNCTION()
 	void LoseLife();
+
+	UFUNCTION()
+	void UpdateLifes(int NewLifes);
 };

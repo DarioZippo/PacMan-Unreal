@@ -7,6 +7,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Actor.h"
 #include "Ghost.h"
+#include "GhostAIController.h"
 
 UChasingGhostTask::UChasingGhostTask(){
 	NodeName = "Chasing";
@@ -40,7 +41,8 @@ void UChasingGhostTask::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
 	if (ControlledGhost){
 		UVectorListContainer* AvailableDirectionsContainer = Cast<UVectorListContainer>(BlackboardComponent->GetValueAsObject(AvailableDirectionsKey.SelectedKeyName));
-		if (AvailableDirectionsContainer != nullptr){			
+		if (AvailableDirectionsContainer != nullptr){
+			UE_LOG(LogTemp, Display, TEXT("AvailableDirectionsContainer"));
 			TArray<FVector2D> AvailableDirections = AvailableDirectionsContainer->VectorArray;
 			
 			FVector2D Direction = FVector2D::Zero();
@@ -48,7 +50,7 @@ void UChasingGhostTask::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
 			// Find the available direction that moves closet to pacman
 			for (const FVector2D& AvailableDirection : AvailableDirections){
-				//UE_LOG(LogTemp, Display, TEXT("X=%f, Y=%f"), AvailableDirection.X, AvailableDirection.Y);
+				UE_LOG(LogTemp, Log, TEXT("X=%f, Y=%f"), AvailableDirection.X, AvailableDirection.Y);
 				
 				// If the distance in this direction is less than the current
 				// min distance then this direction becomes the new closest
@@ -61,8 +63,13 @@ void UChasingGhostTask::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 				}
 			}
 
-			ControlledGhost->CurrentDirection = Direction;
+			ControlledGhost->SetDirection(Direction);
 			BlackboardComponent->ClearValue(AvailableDirectionsKey.SelectedKeyName);
+		}
+		else{
+			if (ControlledGhost->CurrentDirection == FVector2D::Zero()){
+				Cast<AGhostAIController>(AIController)->ResetMovement();
+			}
 		}
 	}
 }

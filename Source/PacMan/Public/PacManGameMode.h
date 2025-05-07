@@ -10,10 +10,15 @@ class ULifeManager;
 class UHUDWidget;
 class UScoreManager;
 
+DECLARE_MULTICAST_DELEGATE(FResetGameEvent);
+
 UCLASS()
 class PACMAN_API APacManGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	static FResetGameEvent OnResetGameEvent;
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Managers")
@@ -30,4 +35,10 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+
+	UFUNCTION()
+	void CheckLifes(int NewLifes);
+	
+	UFUNCTION(BlueprintCallable)
+	void ResetGame();
 };

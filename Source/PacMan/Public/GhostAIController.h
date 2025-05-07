@@ -43,9 +43,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "AI|Blackboard")
 	FString GhostState;
 	
+	FTimerHandle TimerHandle_DelayedStart;
+	
 public:
 	AGhostAIController();
 
+	UFUNCTION(BlueprintCallable)
+	void ResetMovement();
+	
 	UFUNCTION(BlueprintCallable)
 	void SetTargetBlackboard(AActor* TargetActor);
 

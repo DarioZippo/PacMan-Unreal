@@ -10,7 +10,7 @@
 #include "Node.h"
 #include "PacMan_Character.h"
 #include "PaperSpriteComponent.h"
-#include "ProximitySensor.h"
+#include "PaperSprite.h"
 #include "VectorListContainer.h"
 #include "Components/CapsuleComponent.h"
 
@@ -24,6 +24,27 @@ AGhost::AGhost(){
 	GhostSprite->SetCollisionProfileName("NoCollision");
 	GhostSprite->SetGenerateOverlapEvents(false);
 	GhostSprite->SetupAttachment(RootComponent);
+
+	for (int i = 0; i < 4; i++){
+		EyesSpritesMap.Add(FVector2D(1, 0), nullptr);
+		EyesSpritesMap.Add(FVector2D(-1, 0), nullptr);
+		EyesSpritesMap.Add(FVector2D(0, 1), nullptr);
+		EyesSpritesMap.Add(FVector2D(0, -1), nullptr);
+	}
+	
+	EyesSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("EyesSprite"));
+	EyesSprite->CanCharacterStepUpOn = ECB_No;
+	EyesSprite->SetCollisionProfileName("NoCollision");
+	EyesSprite->SetGenerateOverlapEvents(false);
+	EyesSprite->SetSprite(EyesSpritesMap[FVector2D(1, 0)]);
+	EyesSprite->SetupAttachment(GhostSprite);
+
+	FrightenedGhostSprite = CreateDefaultSubobject<UPaperSpriteComponent>(TEXT("FrightenedGhostSprite"));
+	FrightenedGhostSprite->CanCharacterStepUpOn = ECB_No;
+	FrightenedGhostSprite->SetCollisionProfileName("NoCollision");
+	FrightenedGhostSprite->SetGenerateOverlapEvents(false);
+	FrightenedGhostSprite->SetVisibility(false);
+	FrightenedGhostSprite->SetupAttachment(RootComponent);
 	
 	Collider = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collider"));
 	Collider->SetupAttachment(RootComponent);
@@ -58,7 +79,6 @@ void AGhost::BeginPlay(){
 	}
 	
 	SetGhostState(GhostState);
-	CurrentDirection = FVector2D(0, 1);
 }
 
 // Called every frame
@@ -70,8 +90,8 @@ void AGhost::Tick(float DeltaTime){
 }
 
 void AGhost::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-	const FHitResult& SweepResult)
+                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                   const FHitResult& SweepResult)
 {
 	APacMan_Character* Character = Cast<APacMan_Character>(OtherActor);
 	if (!IsEatable && Character){
@@ -86,13 +106,23 @@ void AGhost::OnEnterCapsuleOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 
 			AGhostAIController* GhostController = Cast<AGhostAIController>(GetController());
 			if (GhostController){
-				UE_LOG(LogTemp, Log, TEXT("On Node"));
+				//UE_LOG(LogTemp, Log, TEXT("On Node"));
 				GhostController->SetAvailableDirectionsBlackboard(VectorListContainer);
 			}
 			else{
 				UE_LOG(LogTemp, Error, TEXT("AIController NULL"));
 			}
 		}
+	}
+}
+
+void AGhost::SetDirection(FVector2D NewDirection){	
+	CurrentDirection = NewDirection;
+	if (EyesSpritesMap.Contains(CurrentDirection)){
+		EyesSprite->SetSprite(EyesSpritesMap[CurrentDirection]);
+	}
+	else{
+		UE_LOG(LogTemp, Warning, TEXT("Sprite not contained for NewDirection: %s | CurrentDirection: %s"), *NewDirection.ToString(), *CurrentDirection.ToString());
 	}
 }
 
@@ -106,7 +136,13 @@ bool AGhost::GetIsTeleporting(){
 
 void AGhost::SetGhostState(EGhostState NewGhostState){
 	GhostState = NewGhostState;
-	IsEatable = GhostState == EGhostState::Frightened;
+
+	bool IsFrightened = GhostState == EGhostState::Frightened;
+	IsEatable = IsFrightened;
+	
+	GhostSprite->SetVisibility(!IsFrightened);
+	EyesSprite->SetVisibility(!IsFrightened);
+	FrightenedGhostSprite->SetVisibility(IsFrightened);
 	
 	AGhostAIController* GhostController = Cast<AGhostAIController>(GetController());
 	if (GhostController){
@@ -123,12 +159,23 @@ void AGhost::Eat(){
 		if (EatableEventDispatcher){
 			EatableEventDispatcher->DispatchEatEvent(EEatEvent::Dot, EatScore);
 		}
-
-		FTransform HousePosition = ACharacterPositionManager::Instance->GetRespawnPosition(GhostName);
-		SetActorLocation(HousePosition.GetLocation());
+		Respawn();
 	}
 }
 
 bool AGhost::GetIsEatable(){
 	return IsEatable;
+}
+
+void AGhost::Respawn(){
+	FTransform HousePosition = ACharacterPositionManager::Instance->GetRespawnPosition(GhostName);
+	SetActorLocation(HousePosition.GetLocation());
+
+	AGhostAIController* GhostController = Cast<AGhostAIController>(GetController());
+	if (GhostController){
+		GhostController->ResetMovement();
+	}
+	else{
+		UE_LOG(LogTemp, Error, TEXT("AIController NULL"));
+	}
 }

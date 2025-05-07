@@ -43,7 +43,7 @@ void UFrightenedGhostTask::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 			int32 RandomIndex = UKismetMathLibrary::RandomIntegerInRange(0, AvailableDirections.Num() - 1);
 			FVector2D RandomDirection = AvailableDirections[RandomIndex];
 		
-			ControlledGhost->CurrentDirection = RandomDirection;
+			ControlledGhost->SetDirection(RandomDirection);
 			BlackboardComponent->ClearValue(AvailableDirectionsKey.SelectedKeyName);
 		}
 	}
