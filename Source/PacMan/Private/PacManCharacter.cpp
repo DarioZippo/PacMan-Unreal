@@ -24,7 +24,7 @@ APacManCharacter::APacManCharacter(){
 void APacManCharacter::BeginPlay(){
 	Super::BeginPlay();
 
-	CurrentDirection = FVector2D(1, 0);
+	Respawn();
 }
 
 void APacManCharacter::Tick(float DeltaTime){
